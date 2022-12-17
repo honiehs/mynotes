@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
+// import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
+import '../utilities/show_error_dialog.dart';
 
 //stateless widget
 //rename home page to login view
@@ -77,11 +77,29 @@ class _LoginViewState extends State<LoginView> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  devtools.log('USER NOT FOUND');
+                  // devtools.log('USER NOT FOUND');
+                  await showErrorDialog(
+                    context,
+                    "User not found",
+                  );
+                } else if (e.code == 'wrong-password') {
+                  await showErrorDialog(
+                    context,
+                    "Wrong Credentials",
+                  );
                 } else {
-                  devtools.log('SOMTHING ELSE HAPPEND');
-                  devtools.log(e.code);
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
+                  // devtools.log('SOMTHING ELSE HAPPEND');
+                  // devtools.log(e.code);
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Login'),
